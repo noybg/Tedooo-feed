@@ -1,45 +1,111 @@
+import React, { useRef, useState, useEffect } from 'react';
+import iconLike from '../assets/like-circle.png';
+import { Button } from './Button';
+import { LikeIcon } from './icons/LikeIcon';
+import { CommentIcon } from './icons/CommentIcon';
+import { notifyPostView } from '../utils/postsApi';
+import { FastAverageColor } from 'fast-average-color';
+
+
 type postsProps = {
-    likes: number
-    comments: number
-    didLike: boolean
+    id: string;
+    userId: string;
+    username: string;
+    avatar: string;
+    shopName?: string;
+    shopId?: string;
+    text: string;
+    likes: number;
+    comments: number;
+    didLike: boolean;
+    time: string;
+    images: string[];
 }
 
 export const Post = (props: postsProps) => {
+    const { id, shopName } = props;
+    const [liked, setLiked] = useState(props.didLike);
+    const [dominantColor, setDominantColor] = useState<string>('');
+    const postRef = useRef<HTMLDivElement | null>(null);
+    const firstImageRef = useRef<HTMLImageElement | null>(null); // Ref לתמונה הראשונה
+
+    const toggleLike = () => {
+        setLiked((prev) => !prev);
+    }
+
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    notifyPostView(id); 
+                    observer.unobserve(postRef.current!); 
+                }
+            });
+        });
+
+        if (postRef.current) {
+            observer.observe(postRef.current); 
+        }
+
+        return () => {
+            if (postRef.current) {
+                observer.unobserve(postRef.current); 
+            }
+        };
+    }, [id]);
+
     return (
-        <div className="post-container">
-           <div className="post-header" >
+        <div className="post-container" key={props.id}>
+           <div className="post-header">
             <div className="avatar-container">
-                <img className="avatar" src="https://images.tedooo.com/biz/62e984eca4ff286b57699578/01fda2c9-85c8-44f8-a1c7-f20a628c9dfb.jpg"/>
+                <img className="avatar" src={props.avatar} alt={`${props.username}'s avatar`}/>
             </div>
             <div className="details-container">
-                <div className="username">craftyfun</div>
-                <div className="shop-name">
-                    Crafts ideas
-                    <span className="time"> · 1h</span>
-                </div>
+      
+                <div className="username">{props.username}</div>
+               {shopName ? ( 
+                    <div className="shop-name" key={props.shopId}>
+                        {props.shopName}
+                    <span className="time"> · {props.time}</span>
+                    </div>
+                ) : ( 
+                    <span className="time">{props.time}</span> 
+                )}
             </div>
             </div> 
             <div className="post-body">
-                <p className="post-text">Upload the last 3 pictures of handmade items you’ve made or bought!</p>
-                <div className="post-img-container">
-                    <img className="post-img" src="https://images.tedooo.com/biz/6282267febfcb07f771359c7/d2b86a82-a665-4759-b832-d48f292e2c0b.jpg" />
+                <p className="post-text">{props.text}</p>
+                <div className="post-img-container" style={{ backgroundColor: dominantColor ?? '#000'  }}>
+                    {props.images.map((image, index) => (
+                        <img className="post-img" 
+                        key={index} 
+                        src={image} 
+                        ref={index === 0 ? firstImageRef : null} 
+                        alt={`post image ${index + 1}`} 
+                        />
+                    ))}
                 </div>
             </div>
             <div className="post-footer">
-                <div className="likes">
-                    <div className="icon-like">
-                        <img src="../assets/like-circle.png"/>
+                <div className="likes-comments">
+                    <div className="likes">
+                        <div className="icon-like">
+                            <img src={iconLike}/>
+                        </div>
+                        {props.likes + (liked ? 1 : 0)} Likes
                     </div>
-                    <div className="amount-likes">
-                    {props.likes} Likes
+                    <div className="comments">
+                        {props.comments} Comments
                     </div>
                 </div>
-                <div className="comments">
-                {props.comments} Comments
-                </div>
-                <div className="footer-btn">
-                    <button>Like</button>
-                    <button>Comment</button>
+                <div className="footer-btn" ref={postRef}>
+                    <Button className={liked ? 'like-btn didlike' : 'like-btn'} onClick={toggleLike}>
+                        <LikeIcon color={liked ? '#0A66C2' : undefined} /> Like
+                    </Button>
+                    <Button className='comment-btn'>
+                        <CommentIcon/> Comment
+                    </Button>
                 </div>
             </div>
         </div>

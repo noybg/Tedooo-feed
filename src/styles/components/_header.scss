@@ -1,0 +1,107 @@
+.header {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0px 7px 7px 0px #6D6D6D0A;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+
+    .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 12px;
+    }
+
+    .navbar-left {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 12px;
+        padding: 9px 0;
+        align-items: center;
+    }
+
+    .search-container {
+        height: 100%;
+        
+        .search {
+            border-radius: 32px;
+            background-color: #F4F5F5;
+            border: none;
+            height: 100%;
+            width: min-content;
+            background-image: url('../../assets/search.svg');
+            background-repeat: no-repeat;
+            background-position: center left 14px;
+            padding-inline: 36px;
+    
+            &::placeholder {
+                font-size: 14px;
+                color: #949796;
+            }
+    
+            &:focus-visible {
+                outline: none;
+            }
+        }
+    }
+    
+    .navbar-right {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        justify-items: end;
+    }
+ 
+    @media (max-width: 780px) {
+        .search-container {
+            width: calc(100vw - 300px);
+            justify-content: left;
+            display: flex;
+
+            .search {
+                background-color: transparent;
+                background-position: center left 10px;
+                background-size: 25px;
+                padding: 0;
+                width: 40px;
+                height: 40px;
+                transition: all 0.2s linear;
+    
+                &::placeholder {
+                    color: transparent;
+                }
+    
+                &:focus-visible {
+                    background-color: #F4F5F5;
+                    background-size: 16px;
+                    width: 60vw;
+                    height: 100%;
+                    padding-left: 36px;    
+                }
+            }
+        }
+
+        .navbar-right {
+            gap: 15px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .search-container {
+            width: 100%;
+
+            .search {
+                &:focus-visible {
+                    width: 70vw;  
+                }
+            }
+        }
+    }
+}
+
+
+
+

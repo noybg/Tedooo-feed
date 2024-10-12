@@ -1,0 +1,80 @@
+.like-btn, .comment-btn {
+    width: 100%;
+    padding: 9px 24px;
+    font-size: 14px;
+    color: #484E4C;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    
+    &.didlike {
+        color: #0A66C2;
+    }
+}
+
+.navbar-btn {
+    color: #949796;
+    font-size: 16px;
+    padding: 18px 24px 18px 2px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    width: min-content;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+
+    .navbar-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .navbar-icon-home {
+        width: 18px;
+        height: 18px;
+    }
+
+    &.active {
+        color: #2DB8A1;
+
+        &::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px; 
+            background-color: #2DB8A1;
+            border-radius: 5px; 
+          }
+    }    
+}
+
+@media (max-width: 780px) {
+    .navbar-btn {
+        display: block; 
+        padding: 10px 10px;
+
+        .navbar-icon {
+            width: 23px;
+            height: 23px;
+        }
+
+        .navbar-icon-home {
+            width: 25px;
+            height: 25px;
+        }
+
+        .txt-btn {
+            display: none;
+        }
+    }
+}
