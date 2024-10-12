@@ -4,8 +4,7 @@ import { Button } from './Button';
 import { LikeIcon } from './icons/LikeIcon';
 import { CommentIcon } from './icons/CommentIcon';
 import { notifyPostView } from '../utils/postsApi';
-import { FastAverageColor } from 'fast-average-color';
-
+import { getPrimaryColor } from '../utils/getPrimaryColor';
 
 type postsProps = {
     id: string;
@@ -23,16 +22,29 @@ type postsProps = {
 }
 
 export const Post = (props: postsProps) => {
-    const { id, shopName } = props;
+    const { id, shopName, images } = props;
     const [liked, setLiked] = useState(props.didLike);
-    const [dominantColor, setDominantColor] = useState<string>('');
-    const postRef = useRef<HTMLDivElement | null>(null);
-    const firstImageRef = useRef<HTMLImageElement | null>(null); // Ref לתמונה הראשונה
+    const [dominantColor, setDominantColor] = useState<string>('#fff');
+    const postRef = useRef<HTMLDivElement | null>(null); 
 
     const toggleLike = () => {
         setLiked((prev) => !prev);
     }
 
+    useEffect(() => {
+        const fetchDominantColor = async () => {
+            if (images.length > 0) {
+                try {
+                    const color = await getPrimaryColor(images[0]);
+                    setDominantColor(color);
+                } catch (error) {
+                    console.error('Error fetching dominant color:', error);
+                }
+            }
+        };
+
+        fetchDominantColor();
+    }, [images]);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
@@ -58,56 +70,54 @@ export const Post = (props: postsProps) => {
     return (
         <div className="post-container" key={props.id}>
            <div className="post-header">
-            <div className="avatar-container">
-                <img className="avatar" src={props.avatar} alt={`${props.username}'s avatar`}/>
-            </div>
-            <div className="details-container">
-      
-                <div className="username">{props.username}</div>
-               {shopName ? ( 
-                    <div className="shop-name" key={props.shopId}>
-                        {props.shopName}
-                    <span className="time"> · {props.time}</span>
-                    </div>
-                ) : ( 
-                    <span className="time">{props.time}</span> 
-                )}
-            </div>
-            </div> 
-            <div className="post-body">
-                <p className="post-text">{props.text}</p>
-                <div className="post-img-container" style={{ backgroundColor: dominantColor ?? '#000'  }}>
-                    {props.images.map((image, index) => (
-                        <img className="post-img" 
-                        key={index} 
-                        src={image} 
-                        ref={index === 0 ? firstImageRef : null} 
-                        alt={`post image ${index + 1}`} 
-                        />
-                    ))}
-                </div>
-            </div>
-            <div className="post-footer">
-                <div className="likes-comments">
-                    <div className="likes">
-                        <div className="icon-like">
-                            <img src={iconLike}/>
-                        </div>
-                        {props.likes + (liked ? 1 : 0)} Likes
-                    </div>
-                    <div className="comments">
-                        {props.comments} Comments
-                    </div>
-                </div>
-                <div className="footer-btn" ref={postRef}>
-                    <Button className={liked ? 'like-btn didlike' : 'like-btn'} onClick={toggleLike}>
-                        <LikeIcon color={liked ? '#0A66C2' : undefined} /> Like
-                    </Button>
-                    <Button className='comment-btn'>
-                        <CommentIcon/> Comment
-                    </Button>
-                </div>
-            </div>
+               <div className="avatar-container">
+                   <img className="avatar" src={props.avatar} alt={`${props.username}'s avatar`}/>
+               </div>
+               <div className="details-container">
+                   <div className="username">{props.username}</div>
+                   {shopName ? ( 
+                       <div className="shop-name" key={props.shopId}>
+                           {props.shopName}
+                           <span className="time"> · {props.time}</span>
+                       </div>
+                   ) : ( 
+                       <span className="time">{props.time}</span> 
+                   )}
+               </div>
+           </div> 
+           <div className="post-body">
+               <p className="post-text">{props.text}</p>
+               <div className="post-img-container" style={{ backgroundColor: dominantColor }}>
+                   {images.map((image, index) => (
+                       <img className="post-img" 
+                           key={index} 
+                           src={image} 
+                           alt={`post image ${index + 1}`} 
+                       />
+                   ))}
+               </div>
+           </div>
+           <div className="post-footer">
+               <div className="likes-comments">
+                   <div className="likes">
+                       <div className="icon-like">
+                           <img src={iconLike}/>
+                       </div>
+                       {props.likes + (liked ? 1 : 0)} Likes
+                   </div>
+                   <div className="comments">
+                       {props.comments} Comments
+                   </div>
+               </div>
+               <div className="footer-btn" ref={postRef}>
+                   <Button className={liked ? 'like-btn didlike' : 'like-btn'} onClick={toggleLike}>
+                       <LikeIcon color={liked ? '#0A66C2' : undefined} /> Like
+                   </Button>
+                   <Button className='comment-btn'>
+                       <CommentIcon/> Comment
+                   </Button>
+               </div>
+           </div>
         </div>
     )
 }
