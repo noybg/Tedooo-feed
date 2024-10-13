@@ -42,7 +42,7 @@ export const Post = (props: postsProps) => {
                 }
             }
         };
-
+    
         fetchDominantColor();
     }, [images]);
 

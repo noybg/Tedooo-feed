@@ -11,10 +11,11 @@ export const getPrimaryColor = (imageSrc: string, opacity: number = 0.65): Promi
                 reject('Unable to get canvas context');
                 return;
             }
-            
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
+
+            const scale = 0.5;
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const data = imageData.data;
@@ -23,7 +24,7 @@ export const getPrimaryColor = (imageSrc: string, opacity: number = 0.65): Promi
             let maxCount = 0;
             let dominantColor = '';
 
-            for (let i = 0; i < data.length; i += 4) {
+            for (let i = 0; i < data.length; i += 20) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import './mixins/mixins';
 @import './components/post';
 @import './components/header';
 @import './components/button';
@@ -9,7 +10,7 @@ body {
     padding-block: 82px;  
 }
 
- * {
+* {
     font-family: "DM Sans", sans-serif;
  }
 
@@ -28,20 +29,8 @@ body {
 }
 
 @media (max-width: 768px) {
-
-    .header .container {
-        flex-direction: column;
-        text-align: center;
-    }
-
     .container {
         padding: 0 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .header {
-        padding: 8px 0;
     }
 }
 

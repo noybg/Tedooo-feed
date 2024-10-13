@@ -1,0 +1,14 @@
+@mixin buttonStyle($width, $padding, $fontSize, $color) {
+    cursor: pointer;
+    width: $width;
+    padding: $padding;
+    font-size: $fontSize;
+    color: $color;
+    background-color: transparent;
+    border: none;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}

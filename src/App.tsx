@@ -52,16 +52,16 @@ function App() {
   useEffect(() => {
     const handleScroll = () => {
       const nearBottom =
-          window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 200;
+        window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 200;
       if (nearBottom && !loading && hasMore) {
-          setSkip(prevSkip => prevSkip + 6);
+        setSkip(prevSkip => prevSkip + 6);
       }
   };
 
     window.addEventListener('scroll', handleScroll);
 
     return () => {
-        window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
 }, [loading, hasMore]);
   
