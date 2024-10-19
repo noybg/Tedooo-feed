@@ -25,7 +25,7 @@ const API_BASE_URL = 'https://backend.tedooo.com/hw/feed.json';
 
 export const getPosts = async (skip: number = 0): Promise<ApiResponse> => {
   try {
-    const res = await axios.get<ApiResponse>(`${API_BASE_URL}?skip=${skip}`);   
+    const res = await axios.get<ApiResponse>(`${API_BASE_URL}?skip=${skip}`);     
     return res.data;
   } catch (error) {
     console.log("Error fetching posts:", error);

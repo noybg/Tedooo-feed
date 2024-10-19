@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import { getPosts } from './utils/postsApi';
 import { timeAgo } from './utils/timeAgo';
 import './styles/style.scss';
@@ -27,6 +27,17 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
+  function debounce<T extends (...args: any[]) => void>(func: T, delay: number): (...args: Parameters<T>) => void {
+    let timeoutId: ReturnType<typeof setTimeout>;
+  
+    return (...args: Parameters<T>): void => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  }
+  
   useEffect(() => {
     const fetchPosts = async () => {
         setLoading(true);
@@ -47,25 +58,27 @@ function App() {
     };
 
     fetchPosts();
-}, [skip]);
+  }, [skip]);
 
   useEffect(() => {
     const handleScroll = () => {
       const nearBottom =
-        window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 200;
-      if (nearBottom && !loading && hasMore) {
-        setSkip(prevSkip => prevSkip + 6);
-      }
-  };
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 200;
 
-    window.addEventListener('scroll', handleScroll);
+      if (nearBottom && !loading && hasMore) {
+        setSkip((prevSkip) => prevSkip + 6);
+      }
+    };
+
+    const debouncedHandleScroll = debounce(handleScroll, 200)
+    window.addEventListener('scroll', debouncedHandleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', debouncedHandleScroll);
     };
-}, [loading, hasMore]);
+  }, [loading, hasMore]);
   
-
   return (
     <div className="App">
       <Header />
